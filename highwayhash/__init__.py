@@ -16,14 +16,16 @@ def __process_in(key, data):
 
 
 def __compute_highwayhash_64(key, data):
-    key_ptr = __ffi.cast("uint64_t[4]", __ffi.new("char[32]", key))
+    key_arr = __ffi.new("char[32]", key)
+    key_ptr = __ffi.cast("uint64_t[4]", key_arr)
 
     unpacked_result = __lib.HighwayHash64(data, len(data), key_ptr)
     return pack("Q", unpacked_result)
 
 
 def __compute_highwayhash_128(key, data):
-    key_ptr = __ffi.cast("uint64_t[4]", __ffi.new("char[32]", key))
+    key_arr = __ffi.new("char[32]", key)
+    key_ptr = __ffi.cast("uint64_t[4]", key_arr)
     buffer = __ffi.new("uint64_t[2]")
 
     __lib.HighwayHash128(data, len(data), key_ptr, buffer)
@@ -31,8 +33,9 @@ def __compute_highwayhash_128(key, data):
 
 
 def __compute_highwayhash_256(key, data):
-    key_ptr = __ffi.cast("uint64_t[4]", __ffi.new("char[32]", key))
-    buffer = __ffi.new("uint64_t[5]")  # Intentional
+    key_arr = __ffi.new("char[32]", key)
+    key_ptr = __ffi.cast("uint64_t[4]", key_arr)
+    buffer = __ffi.new("uint64_t[4]")
 
     __lib.HighwayHash256(data, len(data), key_ptr, buffer)
     return bytes(__ffi.buffer(buffer, 32))
